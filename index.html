@@ -5,593 +5,430 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Bilkalkyl — Skoda vs elbil</title>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --bg:#f7f6f2;--surface:#fff;--surface2:#f0ede6;
+    --border:rgba(0,0,0,.10);--border-s:rgba(0,0,0,.18);
+    --text:#1a1a18;--text2:#6b6a65;--text3:#9a9890;
+    --amber:#c17b1a;--amber-bg:#fdf3e0;
+    --green:#2d7a4f;--green-bg:#e6f5ec;
+    --red:#b03030;--red-bg:#fdeaea;
+    --blue:#1a5fa8;--blue-bg:#e8f1fb;
+  }
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
 
-  :root {
-    --bg: #f7f6f2;
-    --surface: #ffffff;
-    --surface2: #f0ede6;
-    --border: rgba(0,0,0,0.10);
-    --border-strong: rgba(0,0,0,0.18);
-    --text: #1a1a18;
-    --text2: #6b6a65;
-    --text3: #9a9890;
-    --amber: #c17b1a;
-    --amber-bg: #fdf3e0;
-    --green: #2d7a4f;
-    --green-bg: #e6f5ec;
-    --red: #b03030;
-    --red-bg: #fdeaea;
-    --blue: #1a5fa8;
-    --blue-bg: #e8f1fb;
-    --accent: #1a5fa8;
-  }
+  .site-header{background:var(--surface);border-bottom:1px solid var(--border)}
+  .site-header-inner{max-width:980px;margin:0 auto;padding:1.75rem 1.5rem 1.25rem}
+  .site-header h1{font-size:1.4rem;font-weight:700;letter-spacing:-.02em;margin-bottom:.35rem}
+  .site-header p{font-size:.85rem;color:var(--text2);line-height:1.6;max-width:580px}
 
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    padding: 0;
-  }
+  .tabs{background:var(--surface);border-bottom:1px solid var(--border)}
+  .tabs-inner{max-width:980px;margin:0 auto;padding:0 1.5rem;display:flex;overflow-x:auto}
+  .tab-btn{font-size:.85rem;font-weight:500;padding:.85rem 1.1rem;border:none;background:none;cursor:pointer;color:var(--text2);border-bottom:2px solid transparent;transition:color .15s,border-color .15s;white-space:nowrap}
+  .tab-btn.active{color:var(--blue);border-bottom-color:var(--blue)}
+  .tab-btn:hover:not(.active){color:var(--text)}
 
-  header {
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    padding: 2rem 1.5rem 1.5rem;
-    max-width: 960px;
-    margin: 0 auto;
-  }
+  .tab-panel{display:none}
+  .tab-panel.active{display:block}
 
-  header h1 {
-    font-size: 1.5rem;
-    font-weight: 600;
-    letter-spacing: -0.02em;
-    margin-bottom: 0.4rem;
-  }
+  main{max-width:980px;margin:0 auto;padding:1.5rem}
 
-  header p {
-    font-size: 0.875rem;
-    color: var(--text2);
-    line-height: 1.6;
-    max-width: 560px;
-  }
+  .controls{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:1.5rem;display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:1.25rem}
+  .cg label{display:block;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text2);margin-bottom:.5rem}
+  .srow{display:flex;align-items:center;gap:8px}
+  .srow .bd{font-size:11px;color:var(--text3);white-space:nowrap}
+  .srow .val{font-size:.875rem;font-weight:600;min-width:68px;text-align:right;color:var(--text)}
+  input[type=range]{flex:1;height:4px;appearance:none;background:var(--border-s);border-radius:2px;outline:none;cursor:pointer}
+  input[type=range]::-webkit-slider-thumb{appearance:none;width:18px;height:18px;border-radius:50%;background:var(--blue);cursor:pointer;border:2px solid white;box-shadow:0 1px 4px rgba(0,0,0,.2)}
+  .trow{display:flex;align-items:center;gap:10px;padding-top:4px}
+  .toggle{position:relative;width:42px;height:24px;flex-shrink:0}
+  .toggle input{opacity:0;width:0;height:0}
+  .stoggle{position:absolute;inset:0;background:var(--border-s);border-radius:24px;cursor:pointer;transition:background .2s}
+  .stoggle:before{content:'';position:absolute;left:3px;top:3px;width:18px;height:18px;background:white;border-radius:50%;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+  .toggle input:checked+.stoggle{background:var(--green)}
+  .toggle input:checked+.stoggle:before{transform:translateX(18px)}
+  .tag{font-size:11px;padding:2px 8px;border-radius:20px;font-weight:500}
+  .tg{background:var(--green-bg);color:var(--green)}
+  .ta{background:var(--amber-bg);color:var(--amber)}
 
-  main {
-    max-width: 960px;
-    margin: 0 auto;
-    padding: 1.5rem;
-  }
+  .slbl{font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text2);margin:0 0 10px}
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;margin-bottom:1.5rem}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.1rem 1.2rem;display:flex;flex-direction:column}
+  .ab{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.06em;background:var(--surface2);color:var(--text2);padding:3px 10px;border-radius:20px;margin-bottom:8px;width:fit-content}
+  .card h2{font-size:.9rem;font-weight:600;margin-bottom:3px;letter-spacing:-.01em}
+  .cdesc{font-size:11px;color:var(--text2);font-style:italic;margin-bottom:12px;line-height:1.5}
+  .sh{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);padding:6px 0 3px;border-bottom:1px solid var(--border);margin-bottom:2px}
+  .cr{display:flex;justify-content:space-between;align-items:center;font-size:12px;padding:4px 0;border-bottom:1px solid rgba(0,0,0,.05);color:var(--text2);gap:8px}
+  .cr:last-child{border-bottom:none}
+  .cr .amt{font-weight:600;color:var(--text);white-space:nowrap}
+  .cr .lft{flex:1}
+  .pr{display:flex;justify-content:space-between;align-items:center;font-size:12px;padding:5px 9px;border-radius:7px;margin:3px 0;font-weight:600;gap:8px}
+  .pr .lft{flex:1}
+  .pd{background:var(--amber-bg);color:var(--amber)}
+  .pe{background:var(--green-bg);color:var(--green)}
+  .prisk{background:var(--red-bg);color:var(--red)}
+  .pn{background:var(--surface2);color:var(--text2)}
+  .ph{display:none}
+  .tot{display:flex;justify-content:space-between;align-items:baseline;font-size:1rem;font-weight:700;padding:10px 0 0;margin-top:8px;border-top:1.5px solid var(--border-s);letter-spacing:-.01em}
+  .cnote{font-size:11px;color:var(--text2);background:var(--surface2);border-radius:7px;padding:7px 9px;margin-top:10px;line-height:1.5;flex:1;display:flex;align-items:flex-end}
 
-  /* Controls */
-  .controls {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 1.25rem 1.5rem;
-    margin-bottom: 1.5rem;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 1.25rem;
-  }
+  .metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin-bottom:1.5rem}
+  .metric{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 12px;text-align:center}
+  .mval{font-size:1.2rem;font-weight:700;color:var(--text)}
+  .msub{font-size:11px;color:var(--text2);margin-top:3px;line-height:1.4}
+  .mtiny{font-size:10px;color:var(--text3);margin-top:2px}
 
-  .control-group label {
-    display: block;
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: var(--text2);
-    margin-bottom: 0.5rem;
-  }
+  .verdict{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.1rem 1.4rem;font-size:.875rem;line-height:1.7;color:var(--text2);margin-bottom:1.5rem}
+  .verdict strong{color:var(--text)}
 
-  .slider-row {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
+  .assumptions{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.1rem 1.4rem}
+  .assumptions h3{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text2);margin-bottom:.75rem}
+  .assumptions ul{list-style:none;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:4px 20px}
+  .assumptions li{font-size:12px;color:var(--text2);padding:3px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;gap:8px}
+  .assumptions li span:last-child{font-weight:600;color:var(--text);white-space:nowrap}
 
-  .slider-row span.bound {
-    font-size: 11px;
-    color: var(--text3);
-    white-space: nowrap;
-  }
+  footer{text-align:center;padding:2rem 1.5rem;font-size:11px;color:var(--text3)}
 
-  .slider-row .val {
-    font-size: 0.875rem;
-    font-weight: 600;
-    min-width: 70px;
-    text-align: right;
-    color: var(--text);
-  }
-
-  input[type=range] {
-    flex: 1;
-    height: 4px;
-    appearance: none;
-    background: var(--border-strong);
-    border-radius: 2px;
-    outline: none;
-    cursor: pointer;
-  }
-  input[type=range]::-webkit-slider-thumb {
-    appearance: none;
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    background: var(--accent);
-    cursor: pointer;
-    border: 2px solid white;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.2);
-  }
-
-  .toggle-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding-top: 4px;
-  }
-
-  .toggle {
-    position: relative;
-    width: 42px;
-    height: 24px;
-    flex-shrink: 0;
-  }
-  .toggle input { opacity: 0; width: 0; height: 0; }
-  .slider-toggle {
-    position: absolute;
-    inset: 0;
-    background: var(--border-strong);
-    border-radius: 24px;
-    cursor: pointer;
-    transition: background .2s;
-  }
-  .slider-toggle:before {
-    content: '';
-    position: absolute;
-    left: 3px;
-    top: 3px;
-    width: 18px;
-    height: 18px;
-    background: white;
-    border-radius: 50%;
-    transition: transform .2s;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-  }
-  .toggle input:checked + .slider-toggle { background: var(--green); }
-  .toggle input:checked + .slider-toggle:before { transform: translateX(18px); }
-
-  .toggle-label {
-    font-size: 0.875rem;
-    font-weight: 500;
-  }
-
-  .tag {
-    font-size: 11px;
-    padding: 2px 8px;
-    border-radius: 20px;
-    font-weight: 500;
-  }
-  .tag-green { background: var(--green-bg); color: var(--green); }
-  .tag-amber { background: var(--amber-bg); color: var(--amber); }
-
-  /* Cards grid */
-  .cards {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-    gap: 12px;
-    margin-bottom: 1.5rem;
-  }
-
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 1.1rem 1.2rem;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .alt-badge {
-    display: inline-block;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    background: var(--surface2);
-    color: var(--text2);
-    padding: 3px 10px;
-    border-radius: 20px;
-    margin-bottom: 8px;
-    width: fit-content;
-  }
-
-  .card h2 {
-    font-size: 0.9rem;
-    font-weight: 600;
-    margin-bottom: 3px;
-    letter-spacing: -0.01em;
-  }
-
-  .card-desc {
-    font-size: 11px;
-    color: var(--text2);
-    font-style: italic;
-    margin-bottom: 12px;
-    line-height: 1.5;
-  }
-
-  .section-head {
-    font-size: 10px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: var(--text3);
-    padding: 6px 0 3px;
-    border-bottom: 1px solid var(--border);
-    margin-bottom: 2px;
-  }
-
-  .cost-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 12px;
-    padding: 4px 0;
-    border-bottom: 1px solid rgba(0,0,0,0.05);
-    color: var(--text2);
-    gap: 8px;
-  }
-  .cost-row:last-child { border-bottom: none; }
-  .cost-row .amt { font-weight: 600; color: var(--text); white-space: nowrap; }
-  .cost-row .lft { flex: 1; }
-
-  .pill-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 12px;
-    padding: 5px 9px;
-    border-radius: 7px;
-    margin: 3px 0;
-    font-weight: 600;
-    gap: 8px;
-  }
-  .pill-row .lft { flex: 1; }
-  .pill-diesel { background: var(--amber-bg); color: var(--amber); }
-  .pill-el { background: var(--green-bg); color: var(--green); }
-  .pill-risk { background: var(--red-bg); color: var(--red); }
-  .pill-hidden { display: none; }
-
-  .total-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    font-size: 1rem;
-    font-weight: 700;
-    padding: 10px 0 0;
-    margin-top: 8px;
-    border-top: 1.5px solid var(--border-strong);
-    letter-spacing: -0.01em;
-  }
-
-  .card-note {
-    font-size: 11px;
-    color: var(--text2);
-    background: var(--surface2);
-    border-radius: 7px;
-    padding: 7px 9px;
-    margin-top: 10px;
-    line-height: 1.5;
-    flex: 1;
-    display: flex;
-    align-items: flex-end;
-  }
-
-  /* Verdict bar */
-  .verdict {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 1.1rem 1.4rem;
-    font-size: 0.875rem;
-    line-height: 1.7;
-    color: var(--text2);
-  }
-  .verdict strong { color: var(--text); }
-
-  /* Assumptions note */
-  .assumptions {
-    margin-top: 1.5rem;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 1.1rem 1.4rem;
-  }
-  .assumptions h3 {
-    font-size: 0.75rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: var(--text2);
-    margin-bottom: 0.75rem;
-  }
-  .assumptions ul {
-    list-style: none;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 4px 20px;
-  }
-  .assumptions li {
-    font-size: 12px;
-    color: var(--text2);
-    padding: 3px 0;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    justify-content: space-between;
-  }
-  .assumptions li span { font-weight: 600; color: var(--text); }
-
-  footer {
-    text-align: center;
-    padding: 2rem 1.5rem;
-    font-size: 11px;
-    color: var(--text3);
-  }
-
-  @media (max-width: 600px) {
-    header { padding: 1.25rem 1rem 1rem; }
-    main { padding: 1rem; }
-    .controls { padding: 1rem; gap: 1rem; }
-    .cards { grid-template-columns: 1fr; }
+  @media(max-width:600px){
+    .site-header-inner{padding:1.25rem 1rem 1rem}
+    main{padding:1rem}
+    .controls{padding:1rem;gap:1rem}
+    .cards{grid-template-columns:1fr}
   }
 </style>
 </head>
 <body>
 
-<div style="background:var(--surface);border-bottom:1px solid var(--border)">
-<header>
-  <h1>Bilkalkyl — Skoda eller elbil?</h1>
-  <p>Jämförelse av fyra alternativ baserat på er faktiska körprofil: 1 800 mil/år, varav 630 mil långa resor med Skodan och 1 170 mil vardagskörning. Dra i reglagen för att se hur siffrorna förändras.</p>
-</header>
+<div class="site-header">
+  <div class="site-header-inner">
+    <h1>Bilkalkyl — Skoda eller elbil?</h1>
+    <p>Baserad på er faktiska körprofil: 1 800 mil/år. 630 mil längre resor med Skodan, 1 170 mil vardagskörning med elbil. Dra i reglagen för att se hur siffrorna förändras.</p>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tabs-inner">
+    <button class="tab-btn active" onclick="showTab('t1',this)">Fyra alternativ</button>
+    <button class="tab-btn" onclick="showTab('t2',this)">Alt 2 — hela vägen</button>
+    <button class="tab-btn" onclick="showTab('t3',this)">Antaganden</button>
+  </div>
 </div>
 
 <main>
 
+<!-- TAB 1 -->
+<div class="tab-panel active" id="t1">
   <div class="controls">
-    <div class="control-group">
+    <div class="cg">
       <label>Dieselpris</label>
-      <div class="slider-row">
-        <span class="bound">18 kr</span>
-        <input type="range" min="18" max="28" step="0.5" value="19.5" id="dp">
-        <span class="bound">28 kr</span>
-        <span class="val" id="dp-out">19,50 kr/l</span>
+      <div class="srow">
+        <span class="bd">18 kr</span>
+        <input type="range" min="18" max="28" step="0.5" value="19.5" id="dp1" oninput="upAll()">
+        <span class="bd">28 kr</span>
+        <span class="val" id="dp1-out">19,50 kr/l</span>
       </div>
     </div>
-
-    <div class="control-group">
+    <div class="cg">
       <label>Oväntad Skoda-reparation</label>
-      <div class="slider-row">
-        <span class="bound">0 kr</span>
-        <input type="range" min="0" max="60000" step="5000" value="0" id="skrep">
-        <span class="bound">60 000</span>
+      <div class="srow">
+        <span class="bd">0 kr</span>
+        <input type="range" min="0" max="60000" step="5000" value="0" id="skrep" oninput="upAll()">
+        <span class="bd">60 000</span>
         <span class="val" id="skrep-out" style="color:var(--red)">0 kr</span>
       </div>
       <div style="font-size:10px;color:var(--text3);margin-top:4px">Påverkar bara Alt 1 och Alt 2</div>
     </div>
-
-    <div class="control-group">
+    <div class="cg">
       <label>Solceller på taket</label>
-      <div class="toggle-row">
-        <label class="toggle">
-          <input type="checkbox" id="sol" checked>
-          <span class="slider-toggle"></span>
-        </label>
-        <span class="toggle-label">Solceller</span>
-        <span class="tag tag-green" id="sol-tag">~70% gratis el</span>
+      <div class="trow">
+        <label class="toggle"><input type="checkbox" id="sol1" checked onchange="upAll()"><span class="stoggle"></span></label>
+        <span style="font-size:.875rem;font-weight:500">Solceller</span>
+        <span class="tag tg" id="sol1-tag">~70% gratis el</span>
       </div>
     </div>
   </div>
 
+  <p class="slbl">Fyra alternativ — 5-årstotal</p>
   <div class="cards">
-
-    <!-- Alt 1 -->
     <div class="card">
-      <span class="alt-badge">ALT 1</span>
+      <span class="ab">ALT 1</span>
       <h2>Behåll bara Skodan</h2>
-      <p class="card-desc">Fortsätter som idag — 1 800 mil/år inkl. massor av 2–3 km-resor.</p>
-
-      <div class="section-head">Skoda per år × 5</div>
-      <div class="cost-row"><span class="lft">Fordonsskatt</span><span class="amt">7 500 kr</span></div>
-      <div class="cost-row"><span class="lft">Halvförsäkring</span><span class="amt">22 500 kr</span></div>
-      <div class="cost-row"><span class="lft">Reparationer (17 000/år)</span><span class="amt">85 000 kr</span></div>
-      <div class="pill-row pill-risk"><span class="lft">DPF/turbo — trolig</span><span>20 000 kr</span></div>
-      <div class="pill-row pill-risk pill-hidden" id="a1-rep-row"><span class="lft">Oväntad reparation</span><span id="a1-rep-val">—</span></div>
-      <div class="pill-row pill-diesel"><span class="lft">Diesel 1 800 mil × 5</span><span id="a1d">158 085 kr</span></div>
-      <div class="pill-row pill-risk"><span class="lft">Värdetapp (60→15k)</span><span>45 000 kr</span></div>
-
-      <div class="total-row"><span>5-årstotal</span><span id="a1tot">338 085 kr</span></div>
-      <div class="card-note">14-årig diesel med felaktigt körmönster. Reparationskostnaden är konservativt satt — kan bli högre. DPF-reparation nära säker.</div>
+      <p class="cdesc">Fortsätter som idag — 1 800 mil/år inkl. massor av 2–3 km-resor.</p>
+      <div class="sh">Skoda per år × 5</div>
+      <div class="cr"><span class="lft">Fordonsskatt</span><span class="amt">7 500 kr</span></div>
+      <div class="cr"><span class="lft">Halvförsäkring</span><span class="amt">22 500 kr</span></div>
+      <div class="cr"><span class="lft">Reparationer (17 000/år)</span><span class="amt">85 000 kr</span></div>
+      <div class="pr prisk"><span class="lft">DPF/turbo — trolig</span><span>20 000 kr</span></div>
+      <div class="pr prisk ph" id="a1-rep"><span class="lft">Oväntad reparation</span><span id="a1-rep-v">—</span></div>
+      <div class="pr pd"><span class="lft">Diesel 1 800 mil × 5</span><span id="a1d">—</span></div>
+      <div class="pr prisk"><span class="lft">Värdetapp (60→15k)</span><span>45 000 kr</span></div>
+      <div class="tot"><span>5-årstotal</span><span id="a1tot">—</span></div>
+      <div class="cnote">14-årig diesel med felaktigt körmönster. DPF-reparation nära säker. Stiger snabbt med dieselpriset.</div>
     </div>
-
-    <!-- Alt 2 -->
     <div class="card">
-      <span class="alt-badge">ALT 2</span>
+      <span class="ab">ALT 2</span>
       <h2>Behåll Skoda + liten elbil</h2>
-      <p class="card-desc">Skoda: 630 mil/år på resor 5+ mil. Elbil tar all 2–3 km-körning.</p>
-
-      <div class="section-head">Investering</div>
-      <div class="cost-row"><span class="lft">Köp begagnad elbil</span><span class="amt">100 000 kr</span></div>
-
-      <div class="section-head" style="margin-top:6px">Skoda 630 mil/år × 5</div>
-      <div class="cost-row"><span class="lft">Fordonsskatt</span><span class="amt">7 500 kr</span></div>
-      <div class="cost-row"><span class="lft">Halvförsäkring</span><span class="amt">22 500 kr</span></div>
-      <div class="cost-row"><span class="lft">Reparationer (12 000/år)</span><span class="amt">60 000 kr</span></div>
-      <div class="pill-row pill-risk pill-hidden" id="a2-rep-row"><span class="lft">Oväntad reparation</span><span id="a2-rep-val">—</span></div>
-      <div class="pill-row pill-diesel"><span class="lft">Diesel 630 mil × 5</span><span id="a2d">55 328 kr</span></div>
-
-      <div class="section-head" style="margin-top:6px">Elbil 1 170 mil/år × 5</div>
-      <div class="cost-row"><span class="lft">Skatt + försäkr + service</span><span class="amt">26 800 kr</span></div>
-      <div class="pill-row pill-el"><span class="lft" id="a2el-lbl">El (sol) 1 170 mil × 5</span><span id="a2el">7 371 kr</span></div>
-
-      <div class="total-row"><span>5-årstotal</span><span id="a2tot">279 499 kr</span></div>
-      <div class="card-note">Lägst 5-årstotal utan Skoda-problem. Skodan skyddas — elbilen tar kortkörningarna och DPF-risken minskar markant.</div>
+      <p class="cdesc">Skoda: 630 mil/år på resor 5+ mil. Elbil tar all 2–3 km-körning.</p>
+      <div class="sh">Investering</div>
+      <div class="cr"><span class="lft">Köp begagnad elbil</span><span class="amt">100 000 kr</span></div>
+      <div class="sh" style="margin-top:6px">Skoda 630 mil/år × 5</div>
+      <div class="cr"><span class="lft">Fordonsskatt</span><span class="amt">7 500 kr</span></div>
+      <div class="cr"><span class="lft">Halvförsäkring</span><span class="amt">22 500 kr</span></div>
+      <div class="cr"><span class="lft">Reparationer (12 000/år)</span><span class="amt">60 000 kr</span></div>
+      <div class="pr prisk ph" id="a2-rep"><span class="lft">Oväntad reparation</span><span id="a2-rep-v">—</span></div>
+      <div class="pr pd"><span class="lft">Diesel 630 mil × 5</span><span id="a2d">—</span></div>
+      <div class="sh" style="margin-top:6px">Elbil 1 170 mil/år × 5</div>
+      <div class="cr"><span class="lft">Skatt + försäkr + service</span><span class="amt">26 800 kr</span></div>
+      <div class="pr pe"><span class="lft" id="a2el-l">El (sol) 1 170 mil × 5</span><span id="a2el">—</span></div>
+      <div class="tot"><span>5-årstotal</span><span id="a2tot">—</span></div>
+      <div class="cnote">Lägst 5-årstotal utan Skoda-problem. Se fliken "Alt 2 hela vägen" för den fullständiga bilden inkl. framtida bilbyte.</div>
     </div>
-
-    <!-- Alt 3 -->
     <div class="card">
-      <span class="alt-badge">ALT 3</span>
+      <span class="ab">ALT 3</span>
       <h2>Sälj Skoda + Enyaq 80x</h2>
-      <p class="card-desc">En bil. Säljer Skodan för 60 000 kr nu. AWD, dragkrok monterad, 512 km WLTP.</p>
-
-      <div class="section-head">Investering</div>
-      <div class="cost-row"><span class="lft">Enyaq 359 900 kr</span><span class="amt">359 900 kr</span></div>
-      <div class="cost-row"><span class="lft" style="color:var(--green)">− Säljer Skoda</span><span class="amt" style="color:var(--green)">−60 000 kr</span></div>
-      <div class="cost-row"><span class="lft">Nettoinvestering</span><span class="amt">299 900 kr</span></div>
-
-      <div class="section-head" style="margin-top:6px">Enyaq 1 800 mil/år × 5</div>
-      <div class="cost-row"><span class="lft">Fordonsskatt (360/år)</span><span class="amt">1 800 kr</span></div>
-      <div class="cost-row"><span class="lft">Helförsäkring</span><span class="amt">30 000 kr</span></div>
-      <div class="cost-row"><span class="lft">Service/däck</span><span class="amt">10 000 kr</span></div>
-      <div class="pill-row pill-el"><span class="lft" id="a3el-lbl">El (sol) 1 800 mil × 5</span><span id="a3el">11 340 kr</span></div>
-
-      <div style="height:29px"></div>
-
-      <div class="total-row"><span>5-årstotal</span><span id="a3tot">353 040 kr</span></div>
-      <div class="card-note">Opåverkat av Skoda-osäkerheten. Totalen är fast oavsett vad Skodan hade kostat. Sälj från styrka medan den är värd 60 000 kr.</div>
+      <p class="cdesc">En bil. Säljer Skodan för 60 000 kr nu. AWD, dragkrok, 512 km WLTP.</p>
+      <div class="sh">Investering</div>
+      <div class="cr"><span class="lft">Enyaq 359 900 kr</span><span class="amt">359 900 kr</span></div>
+      <div class="cr"><span class="lft" style="color:var(--green)">− Säljer Skoda nu</span><span class="amt" style="color:var(--green)">−60 000 kr</span></div>
+      <div class="cr"><span class="lft">Nettoinvestering</span><span class="amt">299 900 kr</span></div>
+      <div class="sh" style="margin-top:6px">Enyaq 1 800 mil/år × 5</div>
+      <div class="cr"><span class="lft">Fordonsskatt (360/år)</span><span class="amt">1 800 kr</span></div>
+      <div class="cr"><span class="lft">Helförsäkring</span><span class="amt">30 000 kr</span></div>
+      <div class="cr"><span class="lft">Service/däck</span><span class="amt">10 000 kr</span></div>
+      <div class="pr pe"><span class="lft" id="a3el-l">El (sol) 1 800 mil × 5</span><span id="a3el">—</span></div>
+      <div class="tot"><span>5-årstotal</span><span id="a3tot">—</span></div>
+      <div class="cnote">Opåverkat av Skoda-osäkerheten. Sälj från styrka medan Skodan är värd 60 000 kr.</div>
     </div>
-
-    <!-- Alt 4 -->
     <div class="card">
-      <span class="alt-badge">ALT 4</span>
+      <span class="ab">ALT 4</span>
       <h2>Sälj Skoda + premiumelbil</h2>
-      <p class="card-desc">T.ex. Tesla Model Y AWD, Volvo EX40, Audi Q4.</p>
-
-      <div class="section-head">Investering</div>
-      <div class="cost-row"><span class="lft">Elbil 550 000 kr</span><span class="amt">550 000 kr</span></div>
-      <div class="cost-row"><span class="lft" style="color:var(--green)">− Säljer Skoda</span><span class="amt" style="color:var(--green)">−60 000 kr</span></div>
-      <div class="cost-row"><span class="lft">Nettoinvestering</span><span class="amt">490 000 kr</span></div>
-
-      <div class="section-head" style="margin-top:6px">Premium elbil 1 800 mil/år × 5</div>
-      <div class="cost-row"><span class="lft">Skatt + försäkr + service</span><span class="amt">43 500 kr</span></div>
-      <div class="pill-row pill-el"><span class="lft" id="a4el-lbl">El (sol) 1 800 mil × 5</span><span id="a4el">11 340 kr</span></div>
-
-      <div style="height:58px"></div>
-
-      <div class="total-row"><span>5-årstotal</span><span id="a4tot">544 840 kr</span></div>
-      <div class="card-note">Opåverkat av Skoda-osäkerheten. Premie mot Alt 3: <span id="gap34" style="font-weight:700">191 800 kr</span> över 5 år.</div>
+      <p class="cdesc">T.ex. Tesla Model Y AWD, Volvo EX40, Audi Q4.</p>
+      <div class="sh">Investering</div>
+      <div class="cr"><span class="lft">Elbil 550 000 kr</span><span class="amt">550 000 kr</span></div>
+      <div class="cr"><span class="lft" style="color:var(--green)">− Säljer Skoda</span><span class="amt" style="color:var(--green)">−60 000 kr</span></div>
+      <div class="cr"><span class="lft">Nettoinvestering</span><span class="amt">490 000 kr</span></div>
+      <div class="sh" style="margin-top:6px">Premium elbil 1 800 mil/år × 5</div>
+      <div class="cr"><span class="lft">Skatt + försäkr + service</span><span class="amt">43 500 kr</span></div>
+      <div class="pr pe"><span class="lft" id="a4el-l">El (sol) 1 800 mil × 5</span><span id="a4el">—</span></div>
+      <div class="tot"><span>5-årstotal</span><span id="a4tot">—</span></div>
+      <div class="cnote">Opåverkat av Skoda-osäkerheten. Premie mot Alt 3: <span id="gap34" style="font-weight:700">—</span> över 5 år.</div>
     </div>
+  </div>
+  <div class="verdict" id="v1"></div>
+</div>
 
+<!-- TAB 2 -->
+<div class="tab-panel" id="t2">
+  <div class="controls">
+    <div class="cg">
+      <label>Dieselpris</label>
+      <div class="srow">
+        <span class="bd">18 kr</span>
+        <input type="range" min="18" max="28" step="0.5" value="19.5" id="dp2" oninput="upAll()">
+        <span class="bd">28 kr</span>
+        <span class="val" id="dp2-out">19,50 kr/l</span>
+      </div>
+    </div>
+    <div class="cg">
+      <label>Alt 2: byter upp efter <span id="yr-lbl" style="color:var(--blue)">3 år</span></label>
+      <div class="srow">
+        <span class="bd">1 år</span>
+        <input type="range" min="1" max="5" step="1" value="3" id="yr" oninput="upAll()">
+        <span class="bd">5 år</span>
+      </div>
+      <div style="font-size:10px;color:var(--text3);margin-top:4px">Säljer Skoda + lilla elbilen, köper stor elbil</div>
+    </div>
+    <div class="cg">
+      <label>Solceller på taket</label>
+      <div class="trow">
+        <label class="toggle"><input type="checkbox" id="sol2" checked onchange="upAll()"><span class="stoggle"></span></label>
+        <span style="font-size:.875rem;font-weight:500">Solceller</span>
+        <span class="tag tg" id="sol2-tag">~70% gratis el</span>
+      </div>
+    </div>
   </div>
 
-  <div class="verdict" id="verdict"></div>
+  <p class="slbl">Vad händer med värdena när ni väntar?</p>
+  <div class="metrics">
+    <div class="metric"><div class="mval" id="m-skoda" style="color:var(--red)">—</div><div class="msub">Skodan värd vid byte</div><div class="mtiny">−6 000 kr/år från 60 000</div></div>
+    <div class="metric"><div class="mval" id="m-evs">—</div><div class="msub">Lilla elbilen värd vid byte</div><div class="mtiny">−8 000 kr/år från 100 000</div></div>
+    <div class="metric"><div class="mval" id="m-enyaq" style="color:var(--blue)">—</div><div class="msub">Stor elbil kostar då</div><div class="mtiny">−13 000 kr/år från 360 000</div></div>
+    <div class="metric"><div class="mval" id="m-net">—</div><div class="msub">Nettokostnad för bytet</div><div class="mtiny">ny elbil minus försäljning</div></div>
+  </div>
 
+  <p class="slbl">Hela 5-årsvägen jämförd</p>
+  <div class="cards">
+    <div class="card">
+      <span class="ab">ALT 2 → ALT 3 (fördröjt)</span>
+      <h2>Börja med liten elbil, byt sedan</h2>
+      <p class="cdesc">Fas 1: <span id="f1d">3 år</span> med Skoda + liten elbil. Fas 2: <span id="f2d">2 år</span> med stor elbil.</p>
+      <div class="sh">Fas 1 — köp liten elbil</div>
+      <div class="cr"><span class="lft">Köp begagnad elbil</span><span class="amt">100 000 kr</span></div>
+      <div class="sh" style="margin-top:6px">Skoda <span id="f1-syr">3 år</span></div>
+      <div class="cr"><span class="lft">Fast (skatt, försäkr, rep)</span><span class="amt" id="f1sf">—</span></div>
+      <div class="pr pd"><span class="lft">Diesel <span id="f1-smil">630 mil × 3</span></span><span id="f1sd">—</span></div>
+      <div class="sh" style="margin-top:6px">Liten elbil <span id="f1-eyr">3 år</span></div>
+      <div class="cr"><span class="lft">Fast (skatt, försäkr, service)</span><span class="amt" id="f1ef">—</span></div>
+      <div class="pr pe"><span class="lft" id="f1-elbl">El (sol) 1 170 mil × 3</span><span id="f1el">—</span></div>
+      <div class="sh" style="margin-top:6px">Byte — sälj, köp stor elbil</div>
+      <div class="cr"><span class="lft" style="color:var(--green)">Skoda säljs för</span><span class="amt" style="color:var(--green)" id="sw-sk">—</span></div>
+      <div class="cr"><span class="lft" style="color:var(--green)">Lilla elbilen säljs för</span><span class="amt" style="color:var(--green)" id="sw-ev">—</span></div>
+      <div class="cr"><span class="lft">Stor elbil köps för</span><span class="amt" id="sw-buy">—</span></div>
+      <div class="sh" style="margin-top:6px">Stor elbil <span id="f2-yr">2 år</span></div>
+      <div class="cr"><span class="lft">Fast (skatt, försäkr, service)</span><span class="amt" id="f2f">—</span></div>
+      <div class="pr pe"><span class="lft" id="f2-elbl">El (sol) 1 800 mil × 2</span><span id="f2el">—</span></div>
+      <div class="tot"><span>Total 5-årsväg</span><span id="path2" style="color:var(--amber)">—</span></div>
+    </div>
+    <div class="card">
+      <span class="ab">ALT 3 — direkt nu</span>
+      <h2>Sälj Skoda + Enyaq 80x direkt</h2>
+      <p class="cdesc">En bil hela perioden. Säljer Skodan nu för 60 000 kr.</p>
+      <div class="sh">Investering</div>
+      <div class="cr"><span class="lft">Enyaq 359 900 kr</span><span class="amt">359 900 kr</span></div>
+      <div class="cr"><span class="lft" style="color:var(--green)">− Säljer Skoda nu</span><span class="amt" style="color:var(--green)">−60 000 kr</span></div>
+      <div class="cr"><span class="lft">Nettoinvestering</span><span class="amt">299 900 kr</span></div>
+      <div class="sh" style="margin-top:6px">Enyaq 5 år</div>
+      <div class="cr"><span class="lft">Fast (skatt, försäkr, service)</span><span class="amt">41 800 kr</span></div>
+      <div class="pr pe"><span class="lft" id="t2a3-lbl">El (sol) 1 800 mil × 5</span><span id="t2a3-el">—</span></div>
+      <div style="height:70px"></div>
+      <div class="tot"><span>Total 5-årsväg</span><span id="t2a3-tot" style="color:var(--blue)">—</span></div>
+      <div class="cnote">Opåverkat av Skoda-osäkerheten. Sälj från styrka medan Skodan är värd 60 000 kr.</div>
+    </div>
+  </div>
+  <div class="verdict" id="v2"></div>
+</div>
+
+<!-- TAB 3 -->
+<div class="tab-panel" id="t3">
   <div class="assumptions">
-    <h3>Antaganden och körprofil</h3>
+    <h3>Körprofil och beräkningsantaganden</h3>
     <ul>
-      <li><span class="lft">Total körsträcka/år</span><span>1 800 mil</span></li>
-      <li><span class="lft">Skoda (Alt 1): 1 lång resa</span><span>100 mil</span></li>
-      <li><span class="lft">Skoda (Alt 1): 7 resor à 40 mil</span><span>280 mil</span></li>
-      <li><span class="lft">Skoda (Alt 1): 50 resor à 5 mil</span><span>250 mil</span></li>
-      <li><span class="lft">Elbil vardagskörning (Alt 2)</span><span>1 170 mil</span></li>
-      <li><span class="lft">Diesel förbrukning</span><span>0,90 l/mil</span></li>
-      <li><span class="lft">El förbrukning elbil</span><span>2,0 kWh/mil</span></li>
-      <li><span class="lft">El nätpris</span><span>1,80 kr/kWh</span></li>
-      <li><span class="lft">El med solceller (~70% sol)</span><span>0,63 kr/kWh</span></li>
-      <li><span class="lft">Skoda halvförsäkring/år</span><span>4 500 kr</span></li>
-      <li><span class="lft">Enyaq helförsäkring/år</span><span>6 000 kr</span></li>
-      <li><span class="lft">Skoda rep. Alt 1 (körs fel)</span><span>17 000 kr/år</span></li>
-      <li><span class="lft">Skoda rep. Alt 2 (körs rätt)</span><span>12 000 kr/år</span></li>
-      <li><span class="lft">Skodan säljs för</span><span>60 000 kr</span></li>
-      <li><span class="lft">Skodan värde om 5 år</span><span>~15 000 kr</span></li>
+      <li><span>Total körsträcka/år</span><span>1 800 mil</span></li>
+      <li><span>1 lång resa (Skoda)</span><span>100 mil</span></li>
+      <li><span>7 mellanresor à 40 mil (Skoda)</span><span>280 mil</span></li>
+      <li><span>50 resor à 5 mil (Skoda)</span><span>250 mil</span></li>
+      <li><span>Skoda-mil vid Alt 2</span><span>630 mil/år</span></li>
+      <li><span>Elbil vardagskörning Alt 2</span><span>1 170 mil/år</span></li>
+      <li><span>Diesel förbrukning Skoda</span><span>0,90 l/mil</span></li>
+      <li><span>El förbrukning elbil</span><span>2,0 kWh/mil</span></li>
+      <li><span>El nätpris</span><span>1,80 kr/kWh</span></li>
+      <li><span>El med solceller (~70% sol)</span><span>0,63 kr/kWh</span></li>
+      <li><span>Skoda skatt + försäkring/år</span><span>6 000 kr</span></li>
+      <li><span>Skoda rep. Alt 1 (körs fel)</span><span>17 000 kr/år</span></li>
+      <li><span>Skoda rep. Alt 2 (körs rätt)</span><span>12 000 kr/år</span></li>
+      <li><span>DPF/turbo engångsreparation</span><span>20 000 kr</span></li>
+      <li><span>Skodan säljs för (nu)</span><span>60 000 kr</span></li>
+      <li><span>Skodan värdetapp per år</span><span>6 000 kr/år</span></li>
+      <li><span>Skodan värde om 5 år (Alt 1)</span><span>~15 000 kr</span></li>
+      <li><span>Enyaq 80x begagnat (nu)</span><span>359 900 kr</span></li>
+      <li><span>Stor elbil prisfall per år</span><span>~13 000 kr/år</span></li>
+      <li><span>Enyaq helförsäkring/år</span><span>6 000 kr</span></li>
+      <li><span>Enyaq service + däck/år</span><span>2 000 kr</span></li>
+      <li><span>Liten begagnad elbil (köpkostnad)</span><span>100 000 kr</span></li>
+      <li><span>Liten elbil värdetapp/år</span><span>8 000 kr/år</span></li>
+      <li><span>Premium elbil (Alt 4)</span><span>550 000 kr</span></li>
     </ul>
   </div>
+  <p style="margin-top:1rem;font-size:12px;color:var(--text3);line-height:1.7;padding:0 2px">
+    Alla siffror är uppskattningar baserade på faktisk körprofil och marknadspriser april 2026. Elbilsprisernas framtida utveckling är osäker — historiskt har begagnade elbilar fallit 40–55% på tre år. Reparationskostnader för en 14-årig Superb med dieselproblem kan bli betydligt högre än vad som antagits.
+  </p>
+</div>
 
 </main>
-
-<footer>Kalkyl baserad på faktisk körprofil och uppskattade marknadspriser april 2026. Alla siffror är ungefärliga.</footer>
+<footer>Kalkyl baserad på faktisk körprofil · Priser april 2026 · Alla siffror är ungefärliga</footer>
 
 <script>
-const GRID=1.80, SOL_F=0.35, KWH=2.0;
-function kr(n){ return Math.round(n).toLocaleString('sv-SE')+' kr'; }
+const GRID=1.80,SOL_F=0.35,KWH=2.0;
+function kr(n){return Math.round(n).toLocaleString('sv-SE')+' kr';}
+function s(id,v){const e=document.getElementById(id);if(e)e.textContent=v;}
 
-function update(){
-  const dp = parseFloat(document.getElementById('dp').value);
-  const skrep = parseFloat(document.getElementById('skrep').value);
-  const sol = document.getElementById('sol').checked;
-  const ep = sol ? GRID*SOL_F : GRID;
-  const lbl = sol ? 'El (sol) ' : 'El (nät) ';
-
-  document.getElementById('dp-out').textContent = dp.toFixed(2).replace('.',',')+' kr/l';
-  document.getElementById('skrep-out').textContent = skrep===0 ? '0 kr' : '+'+kr(skrep);
-  document.getElementById('sol-tag').textContent = sol ? '~70% gratis el' : 'Nätström 1,80 kr/kWh';
-  document.getElementById('sol-tag').className = sol ? 'tag tag-green' : 'tag tag-amber';
-
-  // Skoda rep row visibility
-  const showRep = skrep > 0;
-  document.getElementById('a1-rep-row').className = 'pill-row pill-risk' + (showRep?'':' pill-hidden');
-  document.getElementById('a2-rep-row').className = 'pill-row pill-risk' + (showRep?'':' pill-hidden');
-  document.getElementById('a1-rep-val').textContent = showRep ? '+'+kr(skrep) : '—';
-  document.getElementById('a2-rep-val').textContent = showRep ? '+'+kr(skrep) : '—';
-
-  // Alt 1
-  const a1d = 1800*0.90*dp*5;
-  const a1 = 7500+22500+85000+20000+skrep+a1d+45000;
-  document.getElementById('a1d').textContent = kr(a1d);
-  document.getElementById('a1tot').textContent = kr(a1);
-
-  // Alt 2
-  const a2d = 630*0.90*dp*5;
-  const a2el = 1170*KWH*ep*5;
-  const a2 = 100000+7500+22500+60000+skrep+a2d+26800+a2el;
-  document.getElementById('a2d').textContent = kr(a2d);
-  document.getElementById('a2el').textContent = kr(a2el);
-  document.getElementById('a2el-lbl').textContent = lbl+'1 170 mil × 5';
-  document.getElementById('a2tot').textContent = kr(a2);
-
-  // Alt 3
-  const a3el = 1800*KWH*ep*5;
-  const a3 = 299900+1800+30000+10000+a3el;
-  document.getElementById('a3el').textContent = kr(a3el);
-  document.getElementById('a3el-lbl').textContent = lbl+'1 800 mil × 5';
-  document.getElementById('a3tot').textContent = kr(a3);
-
-  // Alt 4
-  const a4el = 1800*KWH*ep*5;
-  const a4 = 490000+43500+a4el;
-  document.getElementById('a4el').textContent = kr(a4el);
-  document.getElementById('a4el-lbl').textContent = lbl+'1 800 mil × 5';
-  document.getElementById('a4tot').textContent = kr(a4);
-
-  // Gap
-  document.getElementById('gap34').textContent = kr(a4-a3);
-
-  // Verdict
-  const tots = [a1,a2,a3,a4];
-  const names = ['Alt 1','Alt 2','Alt 3','Alt 4'];
-  const minI = tots.indexOf(Math.min(...tots));
-  const a2vsa3 = a3-a2;
-  const crossover = a2 >= a3;
-
-  let verdict = `<strong>Vid ${dp.toFixed(2).replace('.',',')} kr/l diesel`;
-  if(skrep>0) verdict += ` och ${kr(skrep)} oväntad reparation`;
-  verdict += ':</strong> ';
-  verdict += names.map((n,i) => `${n} <strong>${kr(tots[i])}</strong>`).join(' &nbsp;·&nbsp; ');
-  verdict += '. ';
-  if(crossover){
-    verdict += `<strong style="color:var(--red)">Alt 2 har nu passerat Alt 3 — Enyaqn är billigare än att behålla Skodan och köpa en liten elbil.</strong>`;
-  } else {
-    verdict += `Alt 2 är fortfarande <strong>${kr(a2vsa3)}</strong> billigare än Alt 3.`;
-    if(skrep===0 && dp < 22) verdict += ' Öka dieselpriset eller lägg till en oväntad reparation för att se när Alt 3 blir konkurrenskraftig.';
-  }
-
-  document.getElementById('verdict').innerHTML = verdict;
+function showTab(id,btn){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
 }
 
-document.getElementById('dp').addEventListener('input', update);
-document.getElementById('skrep').addEventListener('input', update);
-document.getElementById('sol').addEventListener('change', update);
-update();
+function upAll(){
+  const dp1=parseFloat(document.getElementById('dp1').value);
+  const dp2=parseFloat(document.getElementById('dp2').value);
+  const sol1=document.getElementById('sol1').checked;
+  const sol2=document.getElementById('sol2').checked;
+  const skrep=parseFloat(document.getElementById('skrep').value);
+  const yr=parseInt(document.getElementById('yr').value);
+  upTab1(dp1,sol1,skrep);
+  upTab2(dp2,sol2,yr);
+}
+
+function upTab1(dp,sol,skrep){
+  const ep=sol?GRID*SOL_F:GRID;
+  const lbl=sol?'El (sol) ':'El (nät) ';
+  s('dp1-out',dp.toFixed(2).replace('.',',')+' kr/l');
+  s('skrep-out',skrep===0?'0 kr':'+'+kr(skrep));
+  s('sol1-tag',sol?'~70% gratis el':'Nätström 1,80 kr/kWh');
+  document.getElementById('sol1-tag').className=sol?'tag tg':'tag ta';
+  const sr=skrep>0;
+  document.getElementById('a1-rep').className='pr prisk'+(sr?'':' ph');
+  document.getElementById('a2-rep').className='pr prisk'+(sr?'':' ph');
+  s('a1-rep-v',sr?'+'+kr(skrep):'—');
+  s('a2-rep-v',sr?'+'+kr(skrep):'—');
+  const a1d=1800*0.90*dp*5;
+  const a1=7500+22500+85000+20000+skrep+a1d+45000;
+  s('a1d',kr(a1d));s('a1tot',kr(a1));
+  const a2d=630*0.90*dp*5,a2el=1170*KWH*ep*5;
+  const a2=100000+7500+22500+60000+skrep+a2d+26800+a2el;
+  s('a2d',kr(a2d));s('a2el',kr(a2el));s('a2el-l',lbl+'1 170 mil × 5');s('a2tot',kr(a2));
+  const a3el=1800*KWH*ep*5,a3=299900+1800+30000+10000+a3el;
+  s('a3el',kr(a3el));s('a3el-l',lbl+'1 800 mil × 5');s('a3tot',kr(a3));
+  const a4el=1800*KWH*ep*5,a4=490000+43500+a4el;
+  s('a4el',kr(a4el));s('a4el-l',lbl+'1 800 mil × 5');s('a4tot',kr(a4));s('gap34',kr(a4-a3));
+  const tots=[a1,a2,a3,a4],names=['Alt 1','Alt 2','Alt 3','Alt 4'];
+  const cross=a2>=a3;
+  let v=`<strong>Vid ${dp.toFixed(2).replace('.',',')} kr/l`;
+  if(skrep>0)v+=` och ${kr(skrep)} oväntad rep`;
+  v+=`:</strong> `+names.map((n,i)=>`${n} <strong>${kr(tots[i])}</strong>`).join(' &nbsp;·&nbsp; ')+'. ';
+  v+=cross?`<strong style="color:var(--red)">Alt 2 har passerat Alt 3 — Enyaqn är nu billigare.</strong>`
+    :`Alt 2 är ${kr(a3-a2)} billigare än Alt 3. Se fliken "Alt 2 hela vägen" för den fullständiga bilden inkl. framtida bilbyte.`;
+  document.getElementById('v1').innerHTML=v;
+}
+
+function upTab2(dp,sol,yr){
+  const ep=sol?GRID*SOL_F:GRID;
+  const lbl=sol?'El (sol) ':'El (nät) ';
+  const rem=5-yr;
+  s('dp2-out',dp.toFixed(2).replace('.',',')+' kr/l');
+  s('yr-lbl',yr+' år');
+  s('sol2-tag',sol?'~70% gratis el':'Nätström 1,80 kr/kWh');
+  document.getElementById('sol2-tag').className=sol?'tag tg':'tag ta';
+  const skV=Math.max(5000,60000-6000*yr);
+  const evV=Math.max(20000,100000-8000*yr);
+  const enF=Math.max(220000,359900-13000*yr);
+  const net=enF-skV-evV;
+  s('m-skoda',kr(skV));s('m-evs',kr(evV));s('m-enyaq',kr(enF));s('m-net',kr(net));
+  document.getElementById('m-net').style.color=net>200000?'var(--red)':'var(--text)';
+  s('f1d',yr+' år');s('f2d',rem+' år');
+  s('f1-syr',yr+' år');s('f1-eyr',yr+' år');s('f2-yr',rem+' år');
+  s('f1-smil','630 mil × '+yr);
+  s('f1-elbl',lbl+'1 170 mil × '+yr);
+  s('f2-elbl',lbl+'1 800 mil × '+rem);
+  s('t2a3-lbl',lbl+'1 800 mil × 5');
+  const f1sf=16000*yr,f1sd=630*0.90*dp*yr,f1ef=5360*yr,f1el=1170*KWH*ep*yr;
+  s('f1sf',kr(f1sf));s('f1sd',kr(f1sd));s('f1ef',kr(f1ef));s('f1el',kr(f1el));
+  s('sw-sk','−'+kr(skV));s('sw-ev','−'+kr(evV));s('sw-buy',kr(enF));
+  const f2f=8360*rem,f2el=1800*KWH*ep*rem;
+  s('f2f',kr(f2f));s('f2el',kr(f2el));
+  const path2=100000+f1sf+f1sd+f1ef+f1el-skV-evV+enF+f2f+f2el;
+  s('path2',kr(path2));
+  const a3el=1800*KWH*ep*5,a3=299900+41800+a3el;
+  s('t2a3-el',kr(a3el));s('t2a3-tot',kr(a3));
+  const diff=path2-a3;
+  document.getElementById('v2').innerHTML=
+    `<strong>Alt 2→3 via ${yr}-årsvägen: ${kr(path2)}.</strong> Alt 3 direkt: ${kr(a3)}. `+
+    (diff>0?`Fördröjt byte kostar <strong>${kr(diff)} extra</strong> jämfört med att sälja nu. Skodan tappar 6 000 kr/år och ni missar möjligheten att sälja för 60 000 kr idag.`
+    :`<strong style="color:var(--green)">Fördröjt byte är billigare — elbilspriserna har fallit tillräckligt för att kompensera.</strong>`);
+}
+
+upAll();
 </script>
 </body>
 </html>
