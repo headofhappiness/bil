@@ -110,6 +110,7 @@
   <div class="tabs-inner">
     <button class="tab-btn active" onclick="showTab('t1',this)">Fyra alternativ</button>
     <button class="tab-btn" onclick="showTab('t2',this)">Alt 2 — hela vägen</button>
+    <button class="tab-btn" onclick="showTab('t4',this)">Enyaq vs Tesla</button>
     <button class="tab-btn" onclick="showTab('t3',this)">Antaganden</button>
   </div>
 </div>
@@ -296,6 +297,87 @@
     </div>
   </div>
   <div class="verdict" id="v2"></div>
+</div>
+
+<!-- TAB 4: Enyaq vs Tesla -->
+<div class="tab-panel" id="t4">
+<style>
+.ctable{width:100%;border-collapse:collapse;font-size:13px;background:var(--surface);border-radius:14px;overflow:hidden;border:1px solid var(--border)}
+.ctable th{background:var(--surface2);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text2);padding:10px 14px;text-align:left;border-bottom:1px solid var(--border)}
+.ctable th:not(:first-child){text-align:center}
+.ctable td{padding:9px 14px;border-bottom:1px solid rgba(0,0,0,.05);color:var(--text2);vertical-align:top}
+.ctable td:not(:first-child){text-align:center;font-weight:500;color:var(--text)}
+.ctable tr:last-child td{border-bottom:none}
+.ctable .section-row td{background:var(--surface2);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text3);padding:7px 14px}
+.ctable .winner{color:var(--green)}
+.ctable .warn{color:var(--amber)}
+.ctable .bad{color:var(--red)}
+.ctable .label{color:var(--text2);font-weight:400}
+</style>
+
+<div style="margin-bottom:1.5rem">
+  <p class="slbl">Enyaq 80x vs Tesla Model Y Performance — detaljerad jämförelse</p>
+  <p style="font-size:12px;color:var(--text2);margin-bottom:1rem">Enyaq: 2023, 3 100 mil, 379 500 kr (GoAuto Lessebo) · Tesla: 2024, 4 210 mil, ~370–400 000 kr (KVD budgivning)</p>
+
+  <div style="overflow-x:auto">
+  <table class="ctable">
+    <thead>
+      <tr>
+        <th style="width:40%">Egenskap</th>
+        <th style="width:30%">Enyaq 80x grön</th>
+        <th style="width:30%">Tesla Model Y Perf.</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="section-row"><td colspan="3">Grundfakta</td></tr>
+      <tr><td class="label">År</td><td>2023</td><td>2024</td></tr>
+      <tr><td class="label">Miltal</td><td class="winner">3 100 mil ✓</td><td>4 210 mil ✓</td></tr>
+      <tr><td class="label">Pris</td><td>379 500 kr</td><td>~370–400 000 kr</td></tr>
+      <tr><td class="label">Drivhjul</td><td>AWD ✓</td><td>AWD ✓</td></tr>
+      <tr><td class="label">Effekt</td><td>265 hk</td><td class="winner">534 hk ✓</td></tr>
+      <tr><td class="label">Räckvidd WLTP</td><td>513 km</td><td>510 km</td></tr>
+      <tr><td class="label">Ägare</td><td class="warn">Ej angivet</td><td class="winner">1 ✓</td></tr>
+      <tr><td class="label">Euro NCAP</td><td>⭐⭐⭐⭐⭐</td><td>⭐⭐⭐⭐⭐</td></tr>
+
+      <tr class="section-row"><td colspan="3">Praktiskt</td></tr>
+      <tr><td class="label">Bagageutrymme</td><td>585 l</td><td class="winner">854 l + 117 l frunk ✓</td></tr>
+      <tr><td class="label">Dragkrok</td><td>1 200 kg ✓</td><td class="winner">1 600 kg ✓</td></tr>
+      <tr><td class="label">Takräcke</td><td class="winner">Ja ✓</td><td class="warn">Begränsat (glastak)</td></tr>
+      <tr><td class="label">Värmepump</td><td class="warn">Bekräfta!</td><td class="winner">Ja ✓</td></tr>
+      <tr><td class="label">DC-laddning</td><td>135 kW</td><td class="winner">250 kW ✓</td></tr>
+      <tr><td class="label">Laddning 10–80%</td><td>~35 min</td><td class="winner">~25 min ✓</td></tr>
+      <tr><td class="label">Vinterdäck ingår</td><td class="warn">Ej angivet</td><td class="winner">Ja ✓</td></tr>
+      <tr><td class="label">KVD batteritest</td><td class="warn">Ej visat</td><td class="winner">3/3 ✓</td></tr>
+      <tr><td class="label">Garanti</td><td class="warn">Ej angivet</td><td class="warn">Ej undersökt</td></tr>
+      <tr><td class="label">Servicenätverk</td><td class="winner">Skoda Göteborg ✓</td><td class="warn">Endast Tesla GBG</td></tr>
+
+      <tr class="section-row"><td colspan="3">Kända problem</td></tr>
+      <tr><td class="label">Mjukvara</td><td class="warn">Pekskärm fryser, keyless strular</td><td class="winner">Minimala — OTA-uppdateringar ✓</td></tr>
+      <tr><td class="label">Mekaniska</td><td class="warn">Krängningshämmare (MEB), laddlucka</td><td class="warn">Bromsrost, karosskvalitet</td></tr>
+      <tr><td class="label">Däckslitage</td><td class="winner">Normalt ✓</td><td class="warn">Högt — tung + kraftfull</td></tr>
+      <tr><td class="label">Värmepump i kyla</td><td class="warn">Kan strula under −10°</td><td class="winner">Robust ✓</td></tr>
+
+      <tr class="section-row"><td colspan="3">Driftkostnad (1 800 mil/år)</td></tr>
+      <tr><td class="label">Förbrukning WLTP</td><td>1,73 kWh/mil</td><td>1,75 kWh/mil</td></tr>
+      <tr><td class="label">Verklig sommar</td><td>~1,9 kWh/mil</td><td>~1,9 kWh/mil</td></tr>
+      <tr><td class="label">Verklig vinter</td><td>~2,4 kWh/mil</td><td>~2,3 kWh/mil</td></tr>
+      <tr><td class="label">Kostnad/mil — sol (0,63 kr)</td><td>~1,20 kr sommar / 1,51 kr vinter</td><td>~1,20 kr sommar / 1,45 kr vinter</td></tr>
+      <tr><td class="label">Kostnad/mil — nät (1,80 kr)</td><td>~3,42 kr sommar / 4,32 kr vinter</td><td>~3,42 kr sommar / 4,14 kr vinter</td></tr>
+      <tr><td class="label">Kostnad/mil — Superb diesel</td><td colspan="2" style="text-align:center;color:var(--red)">17,55 kr/mil — ni sparar ~25 000–29 000 kr/år</td></tr>
+      <tr><td class="label">Drivmedel/år med solceller</td><td>~2 160 kr</td><td>~2 160 kr</td></tr>
+      <tr><td class="label">Drivmedel/år med nätström</td><td>~6 156 kr</td><td>~6 156 kr</td></tr>
+
+      <tr class="section-row"><td colspan="3">Nästa steg</td></tr>
+      <tr><td class="label">Enyaq — kolla</td><td colspan="2">Bekräfta värmepump, begär SoH-rapport, fråga om servicehistorik</td></tr>
+      <tr><td class="label">Tesla — kolla</td><td colspan="2">Bekräfta dragkrok monterad, hämta garantistatus via chassinr. hos Tesla Göteborg</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.1rem 1.4rem;margin-top:1rem;font-size:.875rem;line-height:1.7;color:var(--text2)">
+    <strong style="color:var(--text)">Slutsats:</strong> Driftkostnaden är identisk. Tesla vinner på bagageutrymme, laddningshastighet, dragkapacitet och batteritest. Enyaq vinner på servicenätverk, lägre miltal och att ni känner märket. Priset är jämförbart — avgörande är var KVD-budgivningen landar och om Teslan har dragkrok monterad.
+  </div>
+</div>
 </div>
 
 <!-- TAB 3 -->
